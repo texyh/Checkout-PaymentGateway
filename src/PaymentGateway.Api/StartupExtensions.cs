@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using PaymentGateway.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,13 @@ namespace PaymentGateway.Api
                     Description = "This is an api that allow merchants process and manage payments"
                 });
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddDataBase(this IServiceCollection services)
+        {
+            services.AddSingleton(_ => new DbContext());
 
             return services;
         }

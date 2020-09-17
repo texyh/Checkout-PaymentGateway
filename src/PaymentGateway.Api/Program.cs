@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PaymentGateway.Api.UseCases.ProcessPayment;
 
 namespace PaymentGateway.Api
 {
@@ -21,6 +22,11 @@ namespace PaymentGateway.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices(services => 
+                {
+                    services.AddProcessPaymentUseCase();
+                    services.AddDataBase();
                 });
     }
 }
