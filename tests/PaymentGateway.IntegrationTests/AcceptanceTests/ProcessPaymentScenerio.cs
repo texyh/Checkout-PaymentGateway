@@ -40,7 +40,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                     httpResponse = await MakePaymentRequest(paymentRequest);
                 });
 
-            "Then a 201 created response is return"
+            "Then a 201 created response is returned"
                 .x(() => httpResponse.StatusCode.Should().Be(HttpStatusCode.Created));
 
             "Then the payment identifier should be returned"
