@@ -7,6 +7,6 @@ namespace PaymentGateway.Domain.Payments
 {
     public interface IProcessPaymentCommandHandler
     {
-        Task<ProcessPaymentResult> Handle(ProcessPaymentCommand command);
+        Task<ProcessPaymentResult> HandleAsync(ProcessPaymentCommand command);
     }
 }

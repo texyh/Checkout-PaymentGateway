@@ -31,7 +31,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 CardNumber = request.CardNumber,
                 CVV = request.CVV
             };
-            return Result.For(await _handler.Handle(command));
+            return Result.For(await _handler.HandleAsync(command));
         }
     }
 }

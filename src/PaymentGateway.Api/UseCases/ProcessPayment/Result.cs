@@ -14,7 +14,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
         {
             return output switch
             {
-                SuccessResult result => new CreatedResult("api/payments", new PaymentResponse { PaymentId =  result.PaymentId }),
+                SuccessResult result => new CreatedResult($"api/payments/{result.PaymentId}", new PaymentResponse { PaymentId =  result.PaymentId }),
                 _ => new StatusCodeResult(StatusCodes.Status500InternalServerError)
             };
         }

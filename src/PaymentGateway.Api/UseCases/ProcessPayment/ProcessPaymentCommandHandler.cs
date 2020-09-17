@@ -20,7 +20,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             _cryptoService = cryptoService;
         }
 
-        public async Task<ProcessPaymentResult> Handle(ProcessPaymentCommand command)
+        public async Task<ProcessPaymentResult> HandleAsync(ProcessPaymentCommand command)
         {
 
             //Validate Card;
