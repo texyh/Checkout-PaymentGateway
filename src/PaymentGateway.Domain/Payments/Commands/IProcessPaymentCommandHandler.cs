@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PaymentGateway.Domain.Payments
+namespace PaymentGateway.Domain.Payments.Commands
 {
     public interface IProcessPaymentCommandHandler
     {

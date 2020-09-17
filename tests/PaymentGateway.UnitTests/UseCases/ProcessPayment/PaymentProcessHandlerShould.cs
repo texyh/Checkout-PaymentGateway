@@ -2,6 +2,7 @@
 using PaymentGateway.Api.UseCases.ProcessPayment;
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
+using PaymentGateway.Domain.Payments.Commands;
 using PaymentGateway.Framework;
 using System;
 using System.Collections.Generic;

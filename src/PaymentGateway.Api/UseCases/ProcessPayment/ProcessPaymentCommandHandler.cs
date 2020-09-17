@@ -1,5 +1,6 @@
 ﻿using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
+using PaymentGateway.Domain.Payments.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,6 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
         public async Task<ProcessPaymentResult> HandleAsync(ProcessPaymentCommand command)
         {
 
-            //Validate Card;
             // Send Request to Acquiring bank;
 
             var encriptionKey = Guid.NewGuid().ToString("N");
@@ -42,7 +42,8 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 CVV = encriptedCardCVV,
                 BankPaymentIdentifier = Guid.NewGuid().ToString(),
                 Amount = command.Amount,
-                Currency = command.Currency
+                Currency = command.Currency,
+                MerchantId = command.MerchantId
             };
 
             await _paymentRepository.Save(payment);

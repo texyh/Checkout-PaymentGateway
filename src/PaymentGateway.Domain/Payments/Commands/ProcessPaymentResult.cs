@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PaymentGateway.Domain.Payments
+namespace PaymentGateway.Domain.Payments.Commands
 {
     public abstract class ProcessPaymentResult
     {

@@ -26,5 +26,8 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 
         [Required]
         public string CVV { get; set; }
+
+        [Required]
+        public string MerchantId { get; set; }
     }
 }

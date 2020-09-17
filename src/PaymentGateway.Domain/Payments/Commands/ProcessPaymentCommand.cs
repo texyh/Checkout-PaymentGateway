@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PaymentGateway.Domain.Payments
+﻿namespace PaymentGateway.Domain.Payments.Commands
 {
     public class ProcessPaymentCommand
     {
@@ -17,5 +13,7 @@ namespace PaymentGateway.Domain.Payments
         public string Currency { get; set; }
 
         public string CVV { get; set; }
+
+        public string MerchantId { get; set; }
     }
 }

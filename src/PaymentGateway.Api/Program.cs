@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PaymentGateway.Api.UseCases.GetPayment;
 using PaymentGateway.Api.UseCases.ProcessPayment;
 using Serilog;
 using Serilog.Events;
@@ -46,6 +47,7 @@ namespace PaymentGateway.Api
                 .ConfigureServices(services => 
                 {
                     services.AddProcessPaymentUseCase();
+                    services.AddGetPaymentUseCase();
                     services.AddDataBase();
                 });
 

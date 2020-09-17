@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain.Payments;
+using PaymentGateway.Domain.Payments.Commands;
 
 namespace PaymentGateway.Api.UseCases.ProcessPayment
 {
@@ -29,8 +30,10 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 CardExpiryYear = request.CardExpiryYear,
                 CardExpiryMonth = request.CardExpiryMonth,
                 CardNumber = request.CardNumber,
-                CVV = request.CVV
+                CVV = request.CVV,
+                MerchantId = request.MerchantId
             };
+
             return Result.For(await _handler.HandleAsync(command));
         }
     }

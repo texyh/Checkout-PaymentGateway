@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain.Payments;
+using PaymentGateway.Domain.Payments.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;

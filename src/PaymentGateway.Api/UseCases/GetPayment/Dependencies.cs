@@ -1,24 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
-using PaymentGateway.Domain.Payments.Commands;
+using PaymentGateway.Domain.Payments.Queries;
 using PaymentGateway.Framework;
 using PaymentGateway.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace PaymentGateway.Api.UseCases.ProcessPayment
+namespace PaymentGateway.Api.UseCases.GetPayment
 {
     public static class Dependencies
     {
-        public static IServiceCollection AddProcessPaymentUseCase(this IServiceCollection services)
+        public static IServiceCollection AddGetPaymentUseCase(this IServiceCollection services) 
         {
-            services.AddScoped<IProcessPaymentCommandHandler, ProcessPaymentCommandHandler>();
+
+            services.AddScoped<IGetPaymentQueryHandler, GetPaymentQueryHandler>();
             services.TryAddScoped<ICryptoService, CryptoService>();
             services.TryAddScoped<IPaymentRepository, PaymentRepository>();
+
             return services;
         }
     }

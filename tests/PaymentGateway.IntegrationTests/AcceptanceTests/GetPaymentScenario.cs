@@ -1,0 +1,94 @@
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
+using PaymentGateway.Api;
+using PaymentGateway.Api.UseCases.GetPayment;
+using PaymentGateway.Domain.Payments;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Xbehave;
+using Microsoft.Extensions.DependencyInjection;
+using FluentAssertions;
+using System.Net;
+using System.Text.Json;
+
+namespace PaymentGateway.IntegrationTests.AcceptanceTests
+{
+    public class GetPaymentScenario
+    {
+        private TestServer _env;
+
+        public GetPaymentScenario()
+        {
+            _env = CreateTestEnvironment();
+        }
+
+        [Scenario]
+        public void Get_Payment(string paymentId, GetPaymentResponse payment)
+        {
+            "Given an existing payment"
+                .x(async () => paymentId = await CreatePayment());
+
+            "When it is retrieved"
+                .x(async () =>
+                {
+                    var response = await GetPayment(paymentId);
+                    response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+                    var stringResult = await response.Content.ReadAsStringAsync();
+                    payment = JsonSerializer.Deserialize<GetPaymentResponse>(stringResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                });
+
+            "Then it should have the card details"
+                .x(() =>  {
+                  }); 
+        }
+
+        private async Task<HttpResponseMessage> GetPayment(string paymentId)
+        {
+            return await _env.CreateClient().GetAsync($"api/payments/{paymentId}");
+        }
+
+        private async Task<string> CreatePayment()
+        {
+            var payment = new Payment
+            {
+                Id = Guid.NewGuid().ToString(),
+                EncriptionKey = "20ba9d3d123141c8b0ae4df0a3383f7e",
+                CardNumber = "7bedd30c790f45c6410b7389a58d2cbe.a159e99d6f97d3fbc60fe88161d54edac66a5c323521b7b2281465824bdcbae0",
+                CardExpiryMonth = "c3bae8e66e8cf282b77ce798874e5b22.9cc552bdb6f06ebd08c7a2705fa40d28",
+                CardExpiryYear = "1dbf11b97e97ea71d51bc8cf0ffee21f.2088cf0b4b3522a5230beebeaea0132a",
+                CVV = "e6cbdaf95f6f694ba2b83d24b7b9403a.b07288ff12c714ccfd5ca281e84da132",
+                BankPaymentIdentifier = "d4920d4e-c6e0-4b6e-a259-cab69db9f1c5",
+                Amount = 100,
+                Currency = "EUR",
+                MerchantId = Guid.NewGuid().ToString(),
+                CreatedDate = DateTime.UtcNow
+            };
+
+            var paymentRepository = _env.Services.GetService<IPaymentRepository>();
+            await paymentRepository.Save(payment);
+
+            return payment.Id;
+        }
+
+        private TestServer CreateTestEnvironment()
+        {
+            var settings = new List<KeyValuePair<string, string>>();
+            var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
+            var server = new TestServer(new WebHostBuilder()
+                .UseConfiguration(configuration)
+                .UseStartup<Startup>()
+                .ConfigureServices(services =>
+                {
+                    services.AddGetPaymentUseCase();
+                    services.AddDataBase();
+                }));
+
+            return server;
+        }
+    }
+}

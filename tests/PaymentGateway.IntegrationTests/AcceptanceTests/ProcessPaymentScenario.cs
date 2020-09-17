@@ -18,11 +18,11 @@ using Xbehave;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
-    public class ProcessPaymentScenerio
+    public class ProcessPaymentScenario
     {
         private TestServer _env;
 
-        public ProcessPaymentScenerio()
+        public ProcessPaymentScenario()
         {
             _env = CreateTestEnvironment();
         }
@@ -84,6 +84,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 CardExpiryMonth = "4",
                 CardNumber = "5564876598743467",
                 CVV = "782",
+                MerchantId = Guid.NewGuid().ToString()
             };
         }
 
