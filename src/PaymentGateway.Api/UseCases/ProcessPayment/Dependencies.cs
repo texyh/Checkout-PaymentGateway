@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
@@ -19,6 +20,9 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             services.AddScoped<IProcessPaymentCommandHandler, ProcessPaymentCommandHandler>();
             services.TryAddScoped<ICryptoService, CryptoService>();
             services.TryAddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddHostedService<AcquiringBankMockService>();
+            services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>();
+
             return services;
         }
     }

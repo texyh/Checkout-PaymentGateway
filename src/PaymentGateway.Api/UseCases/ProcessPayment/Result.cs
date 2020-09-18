@@ -11,13 +11,11 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 {
     public class Result
     {
-        public static IActionResult For(ProcessPaymentResult output)
+        public static IActionResult For(ProcessPaymentResult output) => output switch
         {
-            return output switch
-            {
-                SuccessResult result => new CreatedResult($"api/payments/{result.PaymentId}", new PaymentResponse { PaymentId =  result.PaymentId }),
+            SuccessResult result => new CreatedResult($"api/payments/{result.PaymentId}", new PaymentResponse { PaymentId = result.PaymentId }),
+            ErrorResult error => new BadRequestObjectResult(error.Message),
                 _ => new StatusCodeResult(StatusCodes.Status500InternalServerError)
-            };
-        }
+        };
     }
 }

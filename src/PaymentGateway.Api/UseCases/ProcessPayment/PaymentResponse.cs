@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             return Equals(obj as PaymentResponse);
         }
 
-        public bool Equals([AllowNull] PaymentResponse other)
+        public bool Equals(PaymentResponse other)
         {
             return other != null &&
                    PaymentId == other.PaymentId;
