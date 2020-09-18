@@ -24,6 +24,9 @@ namespace PaymentGateway.Domain.Payments
         public string BankPaymentIdentifier { get; set; }
 
         public string MerchantId { get; set; }
+
+        public string PaymentStatus {get; set;}
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     }
 }

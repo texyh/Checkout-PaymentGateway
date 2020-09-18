@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Queries;
-
+using PaymentGateway.Domain.Helpers;
 namespace PaymentGateway.Api.UseCases.GetPayment
 {
     public class GetPaymentQueryHandler : IGetPaymentQueryHandler
@@ -30,7 +30,11 @@ namespace PaymentGateway.Api.UseCases.GetPayment
 
             return new SuccessResult 
             {
-                CardNumber = cardNumber
+                CardNumber = cardNumber.Mask(),
+                Amount = payment.Amount,
+                PaymentDate = payment.CreatedDate,
+                PaymentStatus = payment.PaymentStatus,
+                Currency = payment.Currency
             };
         }
     }

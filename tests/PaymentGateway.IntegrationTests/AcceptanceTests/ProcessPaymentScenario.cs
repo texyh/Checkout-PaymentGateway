@@ -53,10 +53,10 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 });
 
             "And the saved card details should be encripted"
-                .x(async () => await AssertCardDetailsAreEncripted(paymentResponse, paymentRequest));
+                .x(async () => await AssertPaymentIsPersistAndCardDetailsAreEncripted(paymentResponse, paymentRequest));
         }
 
-        private async Task AssertCardDetailsAreEncripted(PaymentResponse paymentResponse, PaymentRequest paymentRequest)
+        private async Task AssertPaymentIsPersistAndCardDetailsAreEncripted(PaymentResponse paymentResponse, PaymentRequest paymentRequest)
         {
             var paymentRepository = _env.Services.GetService<IPaymentRepository>();
             var payment = await paymentRepository.FindBy(paymentResponse.PaymentId);
@@ -65,6 +65,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
             payment.CardExpiryMonth.Should().NotBeEquivalentTo(paymentRequest.CardExpiryMonth);
             payment.CardExpiryYear.Should().NotBeEquivalentTo(paymentRequest.CardExpiryYear);
             payment.CVV.Should().NotBeEquivalentTo(paymentRequest.CVV);
+            payment.PaymentStatus.Should().Be(PaymentStatus.Success);
         }
 
         private async Task<HttpResponseMessage> MakePaymentRequest(PaymentRequest paymentRequest)

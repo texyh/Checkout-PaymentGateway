@@ -43,7 +43,8 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 BankPaymentIdentifier = Guid.NewGuid().ToString(),
                 Amount = command.Amount,
                 Currency = command.Currency,
-                MerchantId = command.MerchantId
+                MerchantId = command.MerchantId,
+                PaymentStatus = PaymentStatus.Success
             };
 
             await _paymentRepository.Save(payment);

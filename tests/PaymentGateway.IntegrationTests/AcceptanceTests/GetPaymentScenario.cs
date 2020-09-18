@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
 using System.Net;
 using System.Text.Json;
+using PaymentGateway.Domain.Payments.Queries;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
@@ -27,23 +28,27 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
         }
 
         [Scenario]
-        public void Get_Payment(string paymentId, GetPaymentResponse payment)
+        public void Get_Payment(SuccessResult payment, Payment existingPayment)
         {
             "Given an existing payment"
-                .x(async () => paymentId = await CreatePayment());
+                .x(async () => existingPayment = await CreatePayment());
 
             "When it is retrieved"
                 .x(async () =>
                 {
-                    var response = await GetPayment(paymentId);
+                    var response = await GetPayment(existingPayment.Id);
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
                     var stringResult = await response.Content.ReadAsStringAsync();
-                    payment = JsonSerializer.Deserialize<GetPaymentResponse>(stringResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    payment = JsonSerializer.Deserialize<SuccessResult>(stringResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 });
 
-            "Then it should have the card details"
+            "Then it should have payment details"
                 .x(() =>  {
+                    payment.Currency.Should().Be(existingPayment.Currency);
+                    payment.PaymentStatus.Should().Be(existingPayment.PaymentStatus);
+                    payment.Amount.Should().Be(existingPayment.Amount);
+                    payment.PaymentDate.Should().Be(existingPayment.CreatedDate);
                   }); 
         }
 
@@ -52,7 +57,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
             return await _env.CreateClient().GetAsync($"api/payments/{paymentId}");
         }
 
-        private async Task<string> CreatePayment()
+        private async Task<Payment> CreatePayment()
         {
             var payment = new Payment
             {
@@ -65,6 +70,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 BankPaymentIdentifier = "d4920d4e-c6e0-4b6e-a259-cab69db9f1c5",
                 Amount = 100,
                 Currency = "EUR",
+                PaymentStatus = PaymentStatus.Success,
                 MerchantId = Guid.NewGuid().ToString(),
                 CreatedDate = DateTime.UtcNow
             };
@@ -72,7 +78,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
             var paymentRepository = _env.Services.GetService<IPaymentRepository>();
             await paymentRepository.Save(payment);
 
-            return payment.Id;
+            return payment;
         }
 
         private TestServer CreateTestEnvironment()
