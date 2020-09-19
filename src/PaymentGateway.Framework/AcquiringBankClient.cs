@@ -40,7 +40,6 @@ namespace PaymentGateway.Framework
             {
                 return new BankPaymentResponse
                 {
-                    PaymentIdentifier = Guid.NewGuid().ToString(),
                     PaymentStatus = PaymentStatus.Failed
                 };
             }

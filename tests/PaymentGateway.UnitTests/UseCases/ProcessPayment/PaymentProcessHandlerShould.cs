@@ -1,5 +1,6 @@
 ﻿using Moq;
 using PaymentGateway.Api.UseCases.ProcessPayment;
+using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
@@ -18,11 +19,16 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
         [Fact]
         public async Task Proccess_And_Persist_Payment()
         {
+            var someId = Guid.NewGuid().ToString();
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockCyptoService = new Mock<ICryptoService>();
+            var mockBankClient = new Mock<IAquiringBankClient>();
+            mockBankClient.Setup(x => x.ProcessPayment(It.IsAny<BankPaymentRequest>()))
+                .ReturnsAsync(new BankPaymentResponse { PaymentIdentifier = someId, PaymentStatus = PaymentStatus.Success });
+
             mockCyptoService.Setup(x => x.Encrypt(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns("__encripted__");
-            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object);
+            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object);
             ProcessPaymentCommand command = new ProcessPaymentCommand
             {
                 Amount = 100,
@@ -37,6 +43,39 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
 
             mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
             mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
+            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
+            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Success)), Times.Once);
+        }
+
+        [Fact]
+        public async Task Proccess_And_Persist_Payment_When_Acquiring_Bank_Fails_To_Process_Payment()
+        {
+            var someId = Guid.NewGuid().ToString();
+            var mockPaymentRepository = new Mock<IPaymentRepository>();
+            var mockCyptoService = new Mock<ICryptoService>();
+            var mockBankClient = new Mock<IAquiringBankClient>();
+            mockBankClient.Setup(x => x.ProcessPayment(It.IsAny<BankPaymentRequest>()))
+                .ReturnsAsync(new BankPaymentResponse { PaymentIdentifier = someId, PaymentStatus = PaymentStatus.Failed });
+
+            mockCyptoService.Setup(x => x.Encrypt(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns("__encripted__");
+            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object);
+            ProcessPaymentCommand command = new ProcessPaymentCommand
+            {
+                Amount = 100,
+                Currency = "EUR",
+                CardExpiryYear = "24",
+                CardExpiryMonth = "4",
+                CardNumber = "5564876598743467",
+                CVV = "782",
+            };
+
+            await sut.HandleAsync(command);
+
+            mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
+            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
+            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
+            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Failed)), Times.Once);
         }
 
     }
