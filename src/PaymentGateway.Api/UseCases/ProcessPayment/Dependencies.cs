@@ -27,7 +27,8 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 services.AddHostedService<AcquiringBankMockService>();
             }
 
-            services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>();
+            services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>()
+                    .AddPolicyHandler(RetryPolicy.GetRetryPolicy(2));
 
             return services;
         }
