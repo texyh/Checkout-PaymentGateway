@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PaymentGateway.Domain.AcquiringBank
+namespace PaymentGateway.Infrastructure
 {
     public class AcquiringBankSettings
     {

@@ -13,6 +13,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
 using PaymentGateway.Domain.Helpers;
+using PaymentGateway.Infrastructure;
 
 namespace PaymentGateway.Api
 {

@@ -15,6 +15,7 @@ using Moq;
 using System.Linq;
 using System.Net.Http;
 using FluentAssertions;
+using PaymentGateway.Infrastructure;
 
 namespace PaymentGateway.IntegrationTests.IntegrationTests
 {

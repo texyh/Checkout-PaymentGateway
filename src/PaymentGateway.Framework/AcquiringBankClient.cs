@@ -2,6 +2,7 @@
 using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Helpers;
 using PaymentGateway.Domain.Payments;
+using PaymentGateway.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
