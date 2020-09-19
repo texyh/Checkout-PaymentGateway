@@ -2,6 +2,7 @@
 using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,18 +18,23 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 
         private readonly IAquiringBankClient _acuquiryBank;
 
+        private readonly ILogger _logger;
+
         public ProcessPaymentCommandHandler(
             IPaymentRepository paymentRepository,
-            ICryptoService cryptoService, IAquiringBankClient acuquiryBank)
+            ICryptoService cryptoService,
+            IAquiringBankClient acuquiryBank,
+            ILogger logger)
         {
             _paymentRepository = paymentRepository;
             _cryptoService = cryptoService;
             _acuquiryBank = acuquiryBank;
+            _logger = logger;
         }
 
         public async Task<ProcessPaymentResult> HandleAsync(ProcessPaymentCommand command)
         {
-
+            _logger.Information("starting acquring bank payment request");
             var bankPayemntResult = await _acuquiryBank.ProcessPayment(new BankPaymentRequest 
             {
                 Amount = command.Amount,
@@ -64,12 +70,15 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 
             await _paymentRepository.Save(payment);
 
+
             if(bankPayemntResult.PaymentStatus == PaymentStatus.Success) 
             {
+                _logger.Information("bank payment successful");
                 return new SuccessResult(payment.Id);
             } 
             else 
             {
+                _logger.Error("The Bank was unable to process the payment");
                 return new ErrorResult("The Bank was unable to process the payment");
             }
 

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Serilog;
 
 namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
 {
@@ -23,12 +24,12 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockCyptoService = new Mock<ICryptoService>();
             var mockBankClient = new Mock<IAquiringBankClient>();
+            var mockLogger = new Mock<ILogger>();
             mockBankClient.Setup(x => x.ProcessPayment(It.IsAny<BankPaymentRequest>()))
                 .ReturnsAsync(new BankPaymentResponse { PaymentIdentifier = someId, PaymentStatus = PaymentStatus.Success });
-
             mockCyptoService.Setup(x => x.Encrypt(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns("__encripted__");
-            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object);
+            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object, mockLogger.Object);
             ProcessPaymentCommand command = new ProcessPaymentCommand
             {
                 Amount = 100,
@@ -54,12 +55,12 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockCyptoService = new Mock<ICryptoService>();
             var mockBankClient = new Mock<IAquiringBankClient>();
+            var mockLogger = new Mock<ILogger>();
             mockBankClient.Setup(x => x.ProcessPayment(It.IsAny<BankPaymentRequest>()))
                 .ReturnsAsync(new BankPaymentResponse { PaymentIdentifier = someId, PaymentStatus = PaymentStatus.Failed });
-
             mockCyptoService.Setup(x => x.Encrypt(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns("__encripted__");
-            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object);
+            var sut = new ProcessPaymentCommandHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockBankClient.Object, mockLogger.Object);
             ProcessPaymentCommand command = new ProcessPaymentCommand
             {
                 Amount = 100,

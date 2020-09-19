@@ -3,6 +3,8 @@ using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Queries;
 using PaymentGateway.Domain.Helpers;
+using Serilog;
+
 namespace PaymentGateway.Api.UseCases.GetPayment
 {
     public class GetPaymentQueryHandler : IGetPaymentQueryHandler
@@ -11,10 +13,16 @@ namespace PaymentGateway.Api.UseCases.GetPayment
         
         private readonly ICryptoService _cryptoService;
 
-        public GetPaymentQueryHandler(IPaymentRepository paymentRepository, ICryptoService cryptoService)
+        private readonly ILogger _logger;
+
+        public GetPaymentQueryHandler(
+            IPaymentRepository paymentRepository,
+            ICryptoService cryptoService,
+            ILogger logger)
         {
             _paymentRepository = paymentRepository;
             _cryptoService = cryptoService;
+            _logger = logger;
         }
 
         public async Task<GetPaymentResult> HandleAsync(GetPaymentQuery query)
@@ -23,6 +31,7 @@ namespace PaymentGateway.Api.UseCases.GetPayment
 
             if(payment == null) 
             {
+                _logger.Error($"There is no payment with id: {query.PaymentId}");
                 return new ErrorResult($"There is no payment with id: {query.PaymentId}");
             }
 

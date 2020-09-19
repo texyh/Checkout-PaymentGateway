@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace PaymentGateway.Infrastructure.AcquiringBank
 {
@@ -16,13 +17,17 @@ namespace PaymentGateway.Infrastructure.AcquiringBank
 
         private readonly AcquiringBankSettings _acquiringBankSettings;
 
+        private readonly ILogger _logger;
+
         public AcquiringBankClient(
             HttpClient httpClient,
-            IOptionsMonitor<AcquiringBankSettings> bankSettings)
+            IOptionsMonitor<AcquiringBankSettings> bankSettings,
+            ILogger logger)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri(bankSettings.CurrentValue.ApiUrl);
             _acquiringBankSettings = bankSettings.CurrentValue;
+            _logger = logger;
         }
 
         public async Task<BankPaymentResponse> ProcessPayment(BankPaymentRequest requestModel)
@@ -38,6 +43,7 @@ namespace PaymentGateway.Infrastructure.AcquiringBank
 
             if (!response.IsSuccessStatusCode)
             {
+                _logger.Error($"acquring bank payment failed. error: {response.ReasonPhrase}");
                 return new BankPaymentResponse
                 {
                     PaymentStatus = PaymentStatus.Failed

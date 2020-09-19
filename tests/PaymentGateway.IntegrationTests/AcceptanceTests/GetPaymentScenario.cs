@@ -15,6 +15,7 @@ using FluentAssertions;
 using System.Net;
 using System.Text.Json;
 using PaymentGateway.Domain.Payments.Queries;
+using Serilog;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
@@ -83,6 +84,10 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
 
         private TestServer CreateTestEnvironment()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
             var settings = new List<KeyValuePair<string, string>>();
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
             var server = new TestServer(new WebHostBuilder()
@@ -92,7 +97,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 {
                     services.AddGetPaymentUseCase();
                     services.AddDataBase();
-                }));
+                }).UseSerilog(Log.Logger));
 
             return server;
         }

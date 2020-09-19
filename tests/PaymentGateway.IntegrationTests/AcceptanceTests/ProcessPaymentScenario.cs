@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xbehave;
 using Environment = PaymentGateway.Api.Environment;
+using Serilog;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
@@ -92,10 +93,16 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
 
         private TestServer CreateTestEnvironment()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
             Environment.SetToDevelopment();
+
             var settings = new List<KeyValuePair<string, string>>();
             settings.Add(new KeyValuePair<string, string>("BANK_API_URL", "https://localhost:5002"));
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
+
             var server = new TestServer(new WebHostBuilder()
                 .UseConfiguration(configuration)
                 .UseStartup<Startup>()
@@ -103,7 +110,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 {
                     services.AddProcessPaymentUseCase();
                     services.AddDataBase();
-                }));
+                }).UseSerilog(Log.Logger));
 
             return server;
         }

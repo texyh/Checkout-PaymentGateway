@@ -49,7 +49,7 @@ namespace PaymentGateway.Api
                     services.AddProcessPaymentUseCase();
                     services.AddGetPaymentUseCase();
                     services.AddDataBase();
-                });
+                }).UseSerilog(logger: Log.Logger);
 
         private static IConfiguration BuildConfiguration() =>
             new ConfigurationBuilder()

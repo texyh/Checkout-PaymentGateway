@@ -15,20 +15,24 @@ using System.Linq;
 using System.Net.Http;
 using FluentAssertions;
 using PaymentGateway.Infrastructure.AcquiringBank;
+using Serilog;
 
 namespace PaymentGateway.IntegrationTests.IntegrationTests
 {
-    public class AcquiryBankShould
+    public class AcquiryBankShould : IDisposable
     {
         private readonly WireMockServer _server;
 
         private readonly Mock<IOptionsMonitor<AcquiringBankSettings>> _mockAcquiryBankOptions;
+
+        private readonly Mock<ILogger> _mockLogger;
 
 
         public AcquiryBankShould()
         {
             _server = WireMockServer.Start();
             _mockAcquiryBankOptions = new Mock<IOptionsMonitor<AcquiringBankSettings>>();
+            _mockLogger = new Mock<ILogger>();
         }
 
 
@@ -45,7 +49,7 @@ namespace PaymentGateway.IntegrationTests.IntegrationTests
                     .WithBody(bankPaymentResponse.ToJson()));
             _mockAcquiryBankOptions.SetupGet(x => x.CurrentValue)
                 .Returns(new AcquiringBankSettings { ApiUrl = _server.Urls.First()});
-            var sut = new AcquiringBankClient(new HttpClient(), _mockAcquiryBankOptions.Object);
+            var sut = new AcquiringBankClient(new HttpClient(), _mockAcquiryBankOptions.Object, _mockLogger.Object);
 
 
             var response = await sut.ProcessPayment(new BankPaymentRequest
@@ -72,7 +76,7 @@ namespace PaymentGateway.IntegrationTests.IntegrationTests
                     .WithStatusCode(500));
             _mockAcquiryBankOptions.SetupGet(x => x.CurrentValue)
                 .Returns(new AcquiringBankSettings { ApiUrl = _server.Urls.First() });
-            var sut = new AcquiringBankClient(new HttpClient(), _mockAcquiryBankOptions.Object);
+            var sut = new AcquiringBankClient(new HttpClient(), _mockAcquiryBankOptions.Object, _mockLogger.Object);
 
 
             var response = await sut.ProcessPayment(new BankPaymentRequest
@@ -83,6 +87,11 @@ namespace PaymentGateway.IntegrationTests.IntegrationTests
 
             response.PaymentStatus.Should().Be(PaymentStatus.Failed);
             response.PaymentIdentifier.Should().BeNull();
+        }
+
+        public void Dispose()
+        {
+            _server.Stop();
         }
     }
 }

@@ -22,10 +22,15 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             services.TryAddScoped<ICryptoService, CryptoService>();
             services.TryAddScoped<IPaymentRepository, PaymentRepository>();
 
+
             if(Environment.IsDevelopment())
             {
+                Console.WriteLine("==================== devev");
                 services.AddHostedService<AcquiringBankMockService>();
             }
+
+            Console.WriteLine("==================== prod");
+
 
             services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>()
                     .AddPolicyHandler(RetryPolicy.GetRetryPolicy(2));

@@ -8,6 +8,7 @@ using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Queries;
 using PaymentGateway.Domain.Helpers;
 using Xunit;
+using Serilog;
 
 namespace PaymentGateway.UnitTests.UseCases.GetPayment
 {
@@ -21,12 +22,13 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
             var paymentId = Guid.NewGuid().ToString();
             var payment = GivenPayment(paymentId);
             var mockPaymentRepository = new Mock<IPaymentRepository>();
+            var mockLogger = new Mock<ILogger>();
             mockPaymentRepository.Setup(x => x.FindBy(It.IsAny<string>()))
                                  .ReturnsAsync(payment);
             var mockCyptoService = new Mock<ICryptoService>();
             mockCyptoService.Setup(x => x.Decrypt(payment.CardNumber, It.IsAny<string>()))
                             .Returns(cardNumber);
-            var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object);
+            var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockLogger.Object);
 
             var result = await sut.HandleAsync(new GetPaymentQuery{PaymentId = paymentId}) as SuccessResult;
 
@@ -41,10 +43,11 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
         {
             var paymentId = Guid.NewGuid().ToString();
             var mockPaymentRepository = new Mock<IPaymentRepository>();
+            var mockLogger = new Mock<ILogger>();
             mockPaymentRepository.Setup(x => x.FindBy(It.IsAny<string>()))
                 .ReturnsAsync(null as Payment);
             var mockCyptoService = new Mock<ICryptoService>();
-            var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object);
+            var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockLogger.Object);
 
             var result = await sut.HandleAsync(new GetPaymentQuery{PaymentId = paymentId}) as ErrorResult;
 
