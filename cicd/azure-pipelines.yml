@@ -24,3 +24,9 @@ jobs:
         dockerfile: $(dockerfilePath)
         buildContext: $(Build.SourcesDirectory)
 
+    - script: dotnet test tests/PaymentGateway.UnitTests 
+      displayName: Run Unit Tests
+
+    - script: dotnet test tests/PaymentGateway.IntegrationTests
+      displayName: Run Integration Tests
+
