@@ -20,7 +20,12 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             services.AddScoped<IProcessPaymentCommandHandler, ProcessPaymentCommandHandler>();
             services.TryAddScoped<ICryptoService, CryptoService>();
             services.TryAddScoped<IPaymentRepository, PaymentRepository>();
-            services.AddHostedService<AcquiringBankMockService>();
+
+            if(Environment.IsDevelopment())
+            {
+                services.AddHostedService<AcquiringBankMockService>();
+            }
+
             services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>();
 
             return services;

@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xbehave;
+using Environment = PaymentGateway.Api.Environment;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
@@ -91,6 +92,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
 
         private TestServer CreateTestEnvironment()
         {
+            Environment.SetToDevelopment();
             var settings = new List<KeyValuePair<string, string>>();
             settings.Add(new KeyValuePair<string, string>("BANK_API_URL", "https://localhost:5002"));
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
