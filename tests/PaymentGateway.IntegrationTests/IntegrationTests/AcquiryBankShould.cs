@@ -9,13 +9,12 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 using PaymentGateway.Domain.Helpers;
-using PaymentGateway.Framework;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Linq;
 using System.Net.Http;
 using FluentAssertions;
-using PaymentGateway.Infrastructure;
+using PaymentGateway.Infrastructure.AcquiringBank;
 
 namespace PaymentGateway.IntegrationTests.IntegrationTests
 {
