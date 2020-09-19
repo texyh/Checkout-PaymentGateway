@@ -100,7 +100,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
             Environment.SetToDevelopment();
 
             var settings = new List<KeyValuePair<string, string>>();
-            settings.Add(new KeyValuePair<string, string>("BANK_API_URL", "https://localhost:5002"));
+            settings.Add(new KeyValuePair<string, string>("BANK_API_URL", "http://localhost:5002"));
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
 
             var server = new TestServer(new WebHostBuilder()
