@@ -25,12 +25,8 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 
             if(Environment.IsDevelopment())
             {
-                Console.WriteLine("==================== devev");
                 services.AddHostedService<AcquiringBankMockService>();
             }
-
-            Console.WriteLine("==================== prod");
-
 
             services.AddHttpClient<IAquiringBankClient, AcquiringBankClient>()
                     .AddPolicyHandler(RetryPolicy.GetRetryPolicy(2));
