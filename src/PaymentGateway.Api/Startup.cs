@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Infrastructure.AcquiringBank;
+using ILogger = Serilog.ILogger;
+using PaymentGateway.Api.Middleware;
 
 namespace PaymentGateway.Api
 {
@@ -32,12 +34,12 @@ namespace PaymentGateway.Api
                 .AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseHsts();
+            
+            var logger = serviceProvider.GetService<ILogger>();
+            app.UseExceptionHandler(builder => builder.HandleExceptions(logger, environment));
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
