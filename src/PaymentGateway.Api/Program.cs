@@ -48,7 +48,7 @@ namespace PaymentGateway.Api
                 {
                     services.AddProcessPaymentUseCase();
                     services.AddGetPaymentUseCase();
-                    services.AddDataBase();
+                    services.AddPostgres(BuildConfiguration());
                 }).UseSerilog(logger: Log.Logger);
 
         private static IConfiguration BuildConfiguration() =>

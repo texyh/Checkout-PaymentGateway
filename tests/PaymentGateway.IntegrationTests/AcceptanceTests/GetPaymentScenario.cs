@@ -49,7 +49,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                     payment.Currency.Should().Be(existingPayment.Currency);
                     payment.PaymentStatus.Should().Be(existingPayment.PaymentStatus);
                     payment.Amount.Should().Be(existingPayment.Amount);
-                    payment.PaymentDate.Should().Be(existingPayment.CreatedDate);
+                    payment.PaymentDate.Date.Should().Be(existingPayment.CreatedDate.Date);
                   }); 
         }
 
@@ -89,6 +89,16 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 .CreateLogger();
 
             var settings = new List<KeyValuePair<string, string>>();
+            settings.AddRange(
+                new List<KeyValuePair<string, string>> 
+                {
+                    new KeyValuePair<string, string>("POSTGRES_USERNAME", "root"),
+                    new KeyValuePair<string, string>("POSTGRES_PASSWORD", "Pass@word1"),
+                    new KeyValuePair<string, string>("POSTGRES_HOST", "192.168.99.100"),
+                    new KeyValuePair<string, string>("POSTGRES_DB_NAME", "paymanetGatewayDb"),
+                    new KeyValuePair<string, string>("POSTGRES_PORT", "5432"),
+                }
+            );
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
             var server = new TestServer(new WebHostBuilder()
                 .UseConfiguration(configuration)
@@ -96,7 +106,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 .ConfigureServices(services =>
                 {
                     services.AddGetPaymentUseCase();
-                    services.AddDataBase();
+                    services.AddPostgres(configuration);
                 }).UseSerilog(Log.Logger));
 
             return server;

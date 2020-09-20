@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using PaymentGateway.Infrastructure.AcquiringBank;
 using ILogger = Serilog.ILogger;
 using PaymentGateway.Api.Middleware;
+using PaymentGateway.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace PaymentGateway.Api
 {
@@ -28,7 +30,7 @@ namespace PaymentGateway.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AcquiringBankSettings>(options => options.ApiUrl = Configuration.GetValue("BANK_API_URL", string.Empty));
-
+            // services.AddHealthChecksUI();
             services
                 .AddSwaggerGen()
                 .AddControllers();
@@ -40,6 +42,10 @@ namespace PaymentGateway.Api
             
             var logger = serviceProvider.GetService<ILogger>();
             app.UseExceptionHandler(builder => builder.HandleExceptions(logger, environment));
+
+            logger.Information("Applying Migration");
+            var dbContext = serviceProvider.GetService<PaymentGatewayDbContext>();
+            dbContext.Database.Migrate();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -56,6 +62,7 @@ namespace PaymentGateway.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                // endpoints.MapHealthChecksUI();
             });
         }
     }

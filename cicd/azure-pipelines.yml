@@ -9,6 +9,7 @@ trigger:
 variables:
   vmImage: 'ubuntu-latest'
   dockerfilePath: '$(Build.SourcesDirectory)/docker/Dockerfile'
+  dockerComposePath: '$(Build.SourcesDirectory)/docker/docker-compose.yml'
 
 jobs:
   - job: BuildApi
@@ -27,6 +28,32 @@ jobs:
     - script: dotnet test tests/PaymentGateway.UnitTests 
       displayName: Run Unit Tests
 
+    - task: DockerCompose@0
+      displayName: 'docker-compose down'
+      condition: always()
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerComposeFile: $(dockerComposePath)
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'down --remove-orphans'
+      
+    - task: DockerCompose@0
+      displayName: 'docker-compose up'
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerComposeFile: $(dockerComposePath)
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'up -d --build'
+
     - script: dotnet test tests/PaymentGateway.IntegrationTests
       displayName: Run Integration Tests
+
+    - task: DockerCompose@0
+      displayName: 'docker-compose down'
+      condition: always()
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerComposeFile: $(dockerComposePath)
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'down'
 

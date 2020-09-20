@@ -7,7 +7,13 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BANK_API_URL": "https://localhost:5002"
+        "BANK_API_URL": "https://localhost:5002",
+        "POSTGRES_HOST": "localhost",
+        "POSTGRES_PORT": "5432",
+        "POSTGRES_USERNAME": "root",
+        "POSTGRES_PASSWORD": "Pass@word1",
+        "POSTGRES_DB_NAME" : "paymanetGatewayDb"
+
       },
       "applicationUrl": "https://localhost:5001"
     }

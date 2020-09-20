@@ -1,4 +1,5 @@
-﻿using PaymentGateway.Domain.Payments;
+﻿using Microsoft.EntityFrameworkCore;
+using PaymentGateway.Domain.Payments;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,9 @@ namespace PaymentGateway.Infrastructure
 {
     public class PaymentRepository : IPaymentRepository
     {
-        public DbContext _dbContext { get; }
+        public PaymentGatewayDbContext _dbContext { get; }
 
-        public PaymentRepository(DbContext dbContext)
+        public PaymentRepository(PaymentGatewayDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -19,14 +20,12 @@ namespace PaymentGateway.Infrastructure
         {
             _dbContext.Payments.Add(payment);
 
-            return Task.CompletedTask;
+            return _dbContext.SaveChangesAsync();
         }
 
-        public Task<Payment> FindBy(string id)
+        public async Task<Payment> FindBy(string id)
         {
-            var payment = _dbContext.Payments.Find(x => x.Id == id);
-
-            return Task.FromResult(payment);
+            return await _dbContext.Payments.SingleAsync(x => x.Id == id);
         }
     }
 }

@@ -101,6 +101,16 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
 
             var settings = new List<KeyValuePair<string, string>>();
             settings.Add(new KeyValuePair<string, string>("BANK_API_URL", "http://localhost:5002"));
+            settings.AddRange(
+                new List<KeyValuePair<string, string>> 
+                {
+                    new KeyValuePair<string, string>("POSTGRES_USERNAME", "root"),
+                    new KeyValuePair<string, string>("POSTGRES_PASSWORD", "Pass@word1"),
+                    new KeyValuePair<string, string>("POSTGRES_HOST", "192.168.99.100"),
+                    new KeyValuePair<string, string>("POSTGRES_DB_NAME", "paymanetGatewayDb"),
+                    new KeyValuePair<string, string>("POSTGRES_PORT", "5432"),
+                }
+            );
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
 
             var server = new TestServer(new WebHostBuilder()
@@ -109,7 +119,7 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
                 .ConfigureServices(services =>
                 {
                     services.AddProcessPaymentUseCase();
-                    services.AddDataBase();
+                    services.AddPostgres(configuration);
                 }).UseSerilog(Log.Logger));
 
             return server;
