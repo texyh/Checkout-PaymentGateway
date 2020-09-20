@@ -17,9 +17,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Xbehave;
 using Environment = PaymentGateway.Api.Environment;
 using Serilog;
+using Xunit;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
+    [Collection("Acceptance-Tests")]
     public class ProcessPaymentScenario
     {
         private TestServer _env;

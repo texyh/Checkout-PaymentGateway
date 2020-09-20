@@ -16,9 +16,11 @@ using System.Net;
 using System.Text.Json;
 using PaymentGateway.Domain.Payments.Queries;
 using Serilog;
+using Xunit;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {
+    [Collection("Acceptance-Tests")]
     public class GetPaymentScenario
     {
         private TestServer _env;
