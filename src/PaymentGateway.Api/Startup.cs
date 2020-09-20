@@ -45,7 +45,10 @@ namespace PaymentGateway.Api
 
             logger.Information("Applying Migration");
             var dbContext = serviceProvider.GetService<PaymentGatewayDbContext>();
-            dbContext.Database.Migrate();
+            if(dbContext.Database.GetPendingMigrations().Any())
+            {
+                dbContext.Database.Migrate();
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
