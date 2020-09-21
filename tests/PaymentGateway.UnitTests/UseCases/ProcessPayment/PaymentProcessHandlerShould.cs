@@ -1,7 +1,6 @@
 ﻿using Moq;
 using PaymentGateway.Api.UseCases.ProcessPayment;
 using PaymentGateway.Domain.AcquiringBank;
-using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
 using PaymentGateway.Framework;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Serilog;
+using PaymentGateway.Api.Application.Crypto;
 
 namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
 {

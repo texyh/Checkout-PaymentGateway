@@ -1,5 +1,5 @@
-﻿using PaymentGateway.Domain.AcquiringBank;
-using PaymentGateway.Domain.Crypto;
+﻿using PaymentGateway.Api.Application.Crypto;
+using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
 using Serilog;

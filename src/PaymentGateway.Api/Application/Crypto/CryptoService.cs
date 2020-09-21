@@ -1,11 +1,10 @@
-﻿using PaymentGateway.Domain.Crypto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PaymentGateway.Framework
+namespace PaymentGateway.Api.Application.Crypto
 {
     public class CryptoService : ICryptoService
     {

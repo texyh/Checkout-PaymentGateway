@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PaymentGateway.Domain.Crypto
+namespace PaymentGateway.Api.Application.Crypto
 {
     public interface ICryptoService
     {

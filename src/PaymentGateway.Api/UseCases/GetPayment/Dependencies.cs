@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using PaymentGateway.Domain.Crypto;
+using PaymentGateway.Api.Application.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Queries;
-using PaymentGateway.Framework;
 using PaymentGateway.Infrastructure;
 
 namespace PaymentGateway.Api.UseCases.GetPayment

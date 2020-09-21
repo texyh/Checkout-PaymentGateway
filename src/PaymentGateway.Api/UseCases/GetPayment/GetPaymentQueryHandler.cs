@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using PaymentGateway.Domain.Crypto;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Queries;
 using PaymentGateway.Domain.Helpers;
 using Serilog;
+using PaymentGateway.Api.Application.Crypto;
 
 namespace PaymentGateway.Api.UseCases.GetPayment
 {
