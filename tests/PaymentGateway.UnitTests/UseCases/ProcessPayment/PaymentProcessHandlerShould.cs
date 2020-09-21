@@ -3,7 +3,6 @@ using PaymentGateway.Api.UseCases.ProcessPayment;
 using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
-using PaymentGateway.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
