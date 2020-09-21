@@ -9,7 +9,7 @@ namespace PaymentGateway.Infrastructure
 {
     public class PaymentRepository : IPaymentRepository
     {
-        public PaymentGatewayDbContext _dbContext { get; }
+        private readonly PaymentGatewayDbContext _dbContext;
 
         public PaymentRepository(PaymentGatewayDbContext dbContext)
         {

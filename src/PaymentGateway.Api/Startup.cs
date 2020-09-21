@@ -29,8 +29,8 @@ namespace PaymentGateway.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AcquiringBankSettings>(options => options.ApiUrl = Configuration.GetValue("BANK_API_URL", string.Empty));
-            // services.AddHealthChecksUI();
+            services.Configure<AcquiringBankSettings>(options =>  options.ApiUrl = Configuration.GetValue("BANK_API_URL", string.Empty));
+            
             services
                 .AddSwaggerGen()
                 .AddControllers();
@@ -41,14 +41,10 @@ namespace PaymentGateway.Api
             app.UseHsts();
             
             var logger = serviceProvider.GetService<ILogger>();
+
             app.UseExceptionHandler(builder => builder.HandleExceptions(logger, environment));
 
-            logger.Information("Applying Migration");
-            var dbContext = serviceProvider.GetService<PaymentGatewayDbContext>();
-            if(dbContext.Database.GetPendingMigrations().Any())
-            {
-                dbContext.Database.Migrate();
-            }
+            ApplyMigrations(serviceProvider, logger);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -65,8 +61,18 @@ namespace PaymentGateway.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                // endpoints.MapHealthChecksUI();
             });
+        }
+
+        private void ApplyMigrations(IServiceProvider serviceProvider, ILogger logger) 
+        {
+            logger.Information("Applying Migration");
+            var dbContext = serviceProvider.GetService<PaymentGatewayDbContext>();
+            
+            if(dbContext.Database.GetPendingMigrations().Any())
+            {
+                dbContext.Database.Migrate();
+            }
         }
     }
 }
