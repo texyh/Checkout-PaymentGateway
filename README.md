@@ -22,7 +22,7 @@ You can find what libraries I've used the following;
 - Swagger
 
  ## Build & Run
- To Ensure you have a postgres database running  (ie if you dont have one runnning on your local system already) before starting the applicaiton, you run `docker-compose -f "docker\docker-compose.yml" up -d --build`.
+ To Ensure you have a postgres database running  (ie if you dont have one runnning on your local system already) before starting the applicaiton, navigate to `docker` folder and  run `docker-compose up -d --build`.
 
  To run the project, navigate to `src/PaymentGateway.Api` folder and run `dotnet run`.
 
