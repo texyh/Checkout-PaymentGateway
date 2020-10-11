@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using PaymentGateway.Api.Application.Crypto;
+using PaymentGateway.Application.Crypto;
 using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
@@ -17,7 +17,6 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
     {
         public static IServiceCollection AddProcessPaymentUseCase(this IServiceCollection services)
         {
-            services.AddScoped<IProcessPaymentCommandHandler, ProcessPaymentCommandHandler>();
             services.TryAddScoped<ICryptoService, CryptoService>();
             services.TryAddScoped<IPaymentRepository, PaymentRepository>();
 

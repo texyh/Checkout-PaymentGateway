@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Serilog;
-using PaymentGateway.Api.Application.Crypto;
+using PaymentGateway.Application.Crypto;
 
 namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
 {
@@ -39,7 +39,7 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
                 CVV = "782",
             };
 
-            await sut.HandleAsync(command);
+            await sut.Handle(command, new System.Threading.CancellationToken());
 
             mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
             mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
@@ -70,7 +70,7 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
                 CVV = "782",
             };
 
-            await sut.HandleAsync(command);
+            await sut.Handle(command, new System.Threading.CancellationToken());
 
             mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
             mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);

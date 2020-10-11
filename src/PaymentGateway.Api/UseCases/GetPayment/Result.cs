@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Domain.Payments.Commands;
-using PaymentGateway.Domain.Payments.Queries;
-using ErrorResult = PaymentGateway.Domain.Payments.Queries.ErrorResult;
-using SuccessResult = PaymentGateway.Domain.Payments.Queries.SuccessResult;
+using PaymentGateway.Application.Payments.GetPayment;
+using ErrorResult = PaymentGateway.Application.Payments.GetPayment.ErrorResult;
+using SuccessResult = PaymentGateway.Application.Payments.GetPayment.SuccessResult;
 
 namespace PaymentGateway.Api.UseCases.GetPayment
 {

@@ -1,11 +1,13 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PaymentGateway.Api.UseCases.GetPayment;
+using PaymentGateway.Application.Payments.GetPayment;
 using PaymentGateway.Domain.Payments;
-using PaymentGateway.Domain.Payments.Queries;
 using Xunit;
 
 namespace PaymentGateway.UnitTests.UseCases.GetPayment
@@ -16,7 +18,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
         [Fact]
         public async Task GetPayment()
         {
-            var mockqueryHandler = new Mock<IGetPaymentQueryHandler>();
+            var mockqueryHandler = new Mock<IMediator>();
             var expectedValue = new SuccessResult 
             {
                 CardNumber = "***************3467",
@@ -25,7 +27,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
                 PaymentStatus = PaymentStatus.Success,
                 Currency = "EUR"
             };
-            mockqueryHandler.Setup(x => x.HandleAsync(It.IsAny<GetPaymentQuery>()))
+            mockqueryHandler.Setup(x => x.Send(It.IsAny<GetPaymentQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedValue);
             var sut = new PaymentController(mockqueryHandler.Object);
             var paymentId = Guid.NewGuid().ToString();
@@ -39,12 +41,12 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
         [Fact]
         public async Task Return_Error_If_No_Payment_Is_Found() 
         {
-            var mockqueryHandler = new Mock<IGetPaymentQueryHandler>();
-            mockqueryHandler.Setup(x => x.HandleAsync(It.IsAny<GetPaymentQuery>()))
-                            .ReturnsAsync((GetPaymentQuery query) => new ErrorResult($"There is no payment with id: {query.PaymentId}"));
-            var sut = new PaymentController(mockqueryHandler.Object);
             var paymentId = Guid.NewGuid().ToString();
-
+            var mockqueryHandler = new Mock<IMediator>();
+            mockqueryHandler.Setup(x => x.Send(It.IsAny<GetPaymentQuery>(), It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(new ErrorResult($"There is no payment with id: {paymentId}"));
+            var sut = new PaymentController(mockqueryHandler.Object);
+            
             var response = await sut.GetPayment(paymentId);
 
             var httpResponse = response as NotFoundObjectResult;

@@ -1,13 +1,15 @@
+using System.Threading;
 using System.Threading.Tasks;
-using PaymentGateway.Domain.Payments;
-using PaymentGateway.Domain.Payments.Queries;
+using PaymentGateway.Application.Abstractions.Queries;
+using PaymentGateway.Application.Crypto;
+using PaymentGateway.Application.Payments.GetPayment;
 using PaymentGateway.Domain.Helpers;
+using PaymentGateway.Domain.Payments;
 using Serilog;
-using PaymentGateway.Api.Application.Crypto;
 
 namespace PaymentGateway.Api.UseCases.GetPayment
 {
-    public class GetPaymentQueryHandler : IGetPaymentQueryHandler
+    public class GetPaymentQueryHandler : IQueryHandler<GetPaymentQuery, GetPaymentResult>
     {
         private readonly IPaymentRepository _paymentRepository;
         
@@ -25,7 +27,7 @@ namespace PaymentGateway.Api.UseCases.GetPayment
             _logger = logger;
         }
 
-        public async Task<GetPaymentResult> HandleAsync(GetPaymentQuery query)
+        public async Task<GetPaymentResult> Handle(GetPaymentQuery query, CancellationToken cancellationToken)
         {
             var payment = await _paymentRepository.FindBy(query.PaymentId);
 

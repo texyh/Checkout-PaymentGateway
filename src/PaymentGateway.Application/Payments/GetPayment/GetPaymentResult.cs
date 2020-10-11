@@ -1,24 +1,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace PaymentGateway.Domain.Payments.Queries
+namespace PaymentGateway.Application.Payments.GetPayment
 {
     public abstract class GetPaymentResult
     {
-        
+
     }
 
     public class SuccessResult : GetPaymentResult
     {
-        public string CardNumber {get; set;}
+        public string CardNumber { get; set; }
 
-        public decimal Amount {get; set;}
+        public decimal Amount { get; set; }
 
-        public DateTime PaymentDate {get; set;}
+        public DateTime PaymentDate { get; set; }
 
-        public string Currency {get; set;}
+        public string Currency { get; set; }
 
-        public string PaymentStatus {get; set;}
+        public string PaymentStatus { get; set; }
 
         public override bool Equals(object obj)
         {

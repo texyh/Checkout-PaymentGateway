@@ -25,7 +25,6 @@ namespace PaymentGateway.Api
             {
                 Log.Information("Starting Host");
                 CreateHostBuilder(args).Build().Run();
-
             }
             catch (Exception ex)
             {

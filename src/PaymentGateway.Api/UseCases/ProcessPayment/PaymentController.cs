@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain.Payments;
@@ -13,11 +14,11 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IProcessPaymentCommandHandler _handler;
+        private readonly IMediator _mediator;
 
-        public PaymentController(IProcessPaymentCommandHandler handler)
+        public PaymentController(IMediator mediator)
         {
-            _handler = handler;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -34,7 +35,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
                 MerchantId = request.MerchantId
             };
 
-            return Result.For(await _handler.HandleAsync(command));
+            return Result.For(await _mediator.Send(command));
         }
     }
 }

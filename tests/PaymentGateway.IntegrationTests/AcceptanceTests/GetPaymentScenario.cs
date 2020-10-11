@@ -14,9 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
 using System.Net;
 using System.Text.Json;
-using PaymentGateway.Domain.Payments.Queries;
 using Serilog;
 using Xunit;
+using PaymentGateway.Application.Payments.GetPayment;
 
 namespace PaymentGateway.IntegrationTests.AcceptanceTests
 {

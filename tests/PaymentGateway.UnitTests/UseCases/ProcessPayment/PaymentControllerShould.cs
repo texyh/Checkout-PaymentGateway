@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PaymentGateway.Api.UseCases.ProcessPayment;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -20,9 +22,9 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
         [Fact]
         public async Task ProcessPayment_And_Return_PaymentId()
         {
-            var handler = new Mock<IProcessPaymentCommandHandler>();
+            var handler = new Mock<IMediator>();
             var paymentId = Guid.NewGuid().ToString();
-            handler.Setup(x => x.HandleAsync(It.IsAny<ProcessPaymentCommand>()))
+            handler.Setup(x => x.Send(It.IsAny<ProcessPaymentCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new SuccessResult(paymentId));
             var expectedResponseValue = new PaymentResponse
             {

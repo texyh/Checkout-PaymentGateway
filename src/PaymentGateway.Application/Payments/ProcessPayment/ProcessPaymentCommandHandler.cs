@@ -1,4 +1,6 @@
-﻿using PaymentGateway.Api.Application.Crypto;
+﻿using MediatR;
+using PaymentGateway.Application.Abstractions.Commands;
+using PaymentGateway.Application.Crypto;
 using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
@@ -6,11 +8,12 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PaymentGateway.Api.UseCases.ProcessPayment
 {
-    public class ProcessPaymentCommandHandler : IProcessPaymentCommandHandler
+    public class ProcessPaymentCommandHandler : ICommandHandler<ProcessPaymentCommand, ProcessPaymentResult>
     {
         private readonly IPaymentRepository _paymentRepository;
 
@@ -32,7 +35,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             _logger = logger;
         }
 
-        public async Task<ProcessPaymentResult> HandleAsync(ProcessPaymentCommand command)
+        public async Task<ProcessPaymentResult> Handle(ProcessPaymentCommand command, CancellationToken cancellationToken)
         {
             _logger.Information("starting acquring bank payment request");
             var bankPayemntResult = await _acuquiryBank.ProcessPayment(new BankPaymentRequest 
@@ -83,5 +86,6 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             }
 
         }
+
     }
 }

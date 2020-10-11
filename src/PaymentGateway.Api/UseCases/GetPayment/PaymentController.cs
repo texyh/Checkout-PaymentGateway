@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Domain.Payments.Queries;
+using PaymentGateway.Application.Payments.GetPayment;
 
 namespace PaymentGateway.Api.UseCases.GetPayment
 {
@@ -8,17 +9,17 @@ namespace PaymentGateway.Api.UseCases.GetPayment
     [ApiController]
     public class PaymentController : ControllerBase 
     {
-        private readonly IGetPaymentQueryHandler _queryHandler;
+        private readonly IMediator _mediator;
 
-        public PaymentController(IGetPaymentQueryHandler queryHandler)
+        public PaymentController(IMediator mediator)
         {
-            _queryHandler = queryHandler;
+            _mediator = mediator;
         }
 
         [HttpGet ("{id}")]
         public async Task<IActionResult> GetPayment (string id) 
         {
-           return Result.For(await _queryHandler.HandleAsync(new GetPaymentQuery{ PaymentId = id}));
+           return Result.For(await _mediator.Send(new GetPaymentQuery{ PaymentId = id}));
         }
     }
 }

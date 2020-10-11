@@ -1,6 +1,8 @@
-﻿namespace PaymentGateway.Domain.Payments.Commands
+﻿using PaymentGateway.Application.Abstractions.Commands;
+
+namespace PaymentGateway.Domain.Payments.Commands
 {
-    public class ProcessPaymentCommand
+    public class ProcessPaymentCommand : ICommand<ProcessPaymentResult>
     {
         public string CardNumber { get; set; }
 

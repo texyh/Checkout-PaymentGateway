@@ -15,6 +15,8 @@ using ILogger = Serilog.ILogger;
 using PaymentGateway.Api.Middleware;
 using PaymentGateway.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using PaymentGateway.Application.Payments.GetPayment;
 
 namespace PaymentGateway.Api
 {
@@ -34,6 +36,8 @@ namespace PaymentGateway.Api
             services
                 .AddSwaggerGen()
                 .AddControllers();
+
+            services.AddMediatR(typeof(Startup), typeof(GetPaymentQuery));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider serviceProvider)

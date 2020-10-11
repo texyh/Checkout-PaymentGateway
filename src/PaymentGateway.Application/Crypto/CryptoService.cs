@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PaymentGateway.Api.Application.Crypto
+namespace PaymentGateway.Application.Crypto
 {
     public class CryptoService : ICryptoService
     {

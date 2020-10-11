@@ -4,11 +4,11 @@ using FluentAssertions;
 using Moq;
 using PaymentGateway.Api.UseCases.GetPayment;
 using PaymentGateway.Domain.Payments;
-using PaymentGateway.Domain.Payments.Queries;
 using PaymentGateway.Domain.Helpers;
 using Xunit;
 using Serilog;
-using PaymentGateway.Api.Application.Crypto;
+using PaymentGateway.Application.Crypto;
+using PaymentGateway.Application.Payments.GetPayment;
 
 namespace PaymentGateway.UnitTests.UseCases.GetPayment
 {
@@ -30,7 +30,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
                             .Returns(cardNumber);
             var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockLogger.Object);
 
-            var result = await sut.HandleAsync(new GetPaymentQuery{PaymentId = paymentId}) as SuccessResult;
+            var result = await sut.Handle(new GetPaymentQuery{PaymentId = paymentId}, new System.Threading.CancellationToken()) as SuccessResult;
 
             result.Amount.Should().Be(payment.Amount);
             result.PaymentDate.Should().Be(payment.CreatedDate);
@@ -49,7 +49,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
             var mockCyptoService = new Mock<ICryptoService>();
             var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockLogger.Object);
 
-            var result = await sut.HandleAsync(new GetPaymentQuery{PaymentId = paymentId}) as ErrorResult;
+            var result = await sut.Handle(new GetPaymentQuery{PaymentId = paymentId}, new System.Threading.CancellationToken()) as ErrorResult;
 
             result.Message.Should().Be($"There is no payment with id: {paymentId}");
         }
