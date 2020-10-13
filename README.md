@@ -13,7 +13,6 @@ I've used `Clean Architecture`, `DDD`, `Event Sourcing`, `CQRS`  while I was wor
 ### Libraries
 You can find what libraries I've used the following;
 
-- Entity Framework Core
 - XUnit
 - FluentAssertion
 - Xbehave
