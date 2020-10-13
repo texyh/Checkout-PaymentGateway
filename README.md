@@ -3,7 +3,7 @@
 ## Technical Details
 
 ### Architecture
-I've used `Clean Architecture`  while I was working on this test. This means that you will see `UseCase` in the solution and everything was grouped and placed under its own use case folder. It's really easy to navigate. I've also used `CQRS` and `Postgres` database. You will also see tests such as `UnitTests`, `IntegrationTests` and `AcceptanceTests`. 
+I've used `Clean Architecture`, `DDD`, `Event Sourcing`, `CQRS`  while I was working on this test. This means that you will see `UseCase` in the solution and everything was grouped and placed under its own use case folder. It's really easy to navigate. I've also used `Martendb`, a .NET Transactional Document DB and Event Store on `PostgreSQL`. You will also see tests such as `UnitTests`, `IntegrationTests` and `AcceptanceTests`. 
 
 
 ### Folder Structure
@@ -20,6 +20,8 @@ You can find what libraries I've used the following;
 - Polly
 - Serilog
 - Swagger
+- MartenDB
+- Fluent Validation
 
  ## Build & Run
  To Ensure you have a postgres database running  (ie if you dont have one runnning on your local system already) before starting the applicaiton, navigate to `docker` folder and  run `docker-compose up -d --build`.
