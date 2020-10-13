@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using PaymentGateway.Application.Abstractions.Queries;
@@ -29,8 +30,8 @@ namespace PaymentGateway.Api.UseCases.GetPayment
 
         public async Task<GetPaymentResult> Handle(GetPaymentQuery query, CancellationToken cancellationToken)
         {
-            var payment = await _paymentRepository.FindBy(query.PaymentId);
-
+            var payment = await _paymentRepository.Load(Guid.Parse(query.PaymentId));
+           
             if(payment == null) 
             {
                 _logger.Error($"There is no payment with id: {query.PaymentId}");

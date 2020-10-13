@@ -1,9 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Marten;
+using Marten.Storage;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using PaymentGateway.Application.Abstractions.Commands;
+using PaymentGateway.Application.Abstractions.Queries;
+using PaymentGateway.Application.Decorators;
+using PaymentGateway.Application.Payments.GetPayment;
+using PaymentGateway.Domain.Payments;
 using PaymentGateway.Infrastructure;
 using Serilog;
 using System;
@@ -31,23 +40,38 @@ namespace PaymentGateway.Api
             return services;
         }
 
-        
-
-        public static IServiceCollection AddPostgres(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddPostgresHealthCheck(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHealthChecks()
                 .AddNpgSql(GetConnectionString(configuration));
 
-            services.AddDbContextPool<PaymentGatewayDbContext>((serviceProvider, builder) =>
-            {
-                var logger = serviceProvider.GetService<ILogger>();
+            return services;
+        }
 
-                
-                builder.UseNpgsql(GetConnectionString(configuration), optionsBuilder =>
-                {
-                   optionsBuilder.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                });
-            });
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            AssemblyScanner
+                .FindValidatorsInAssembly(typeof(GetPaymentQueryValidator).Assembly)
+                .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
+
+            return services;
+        }
+
+        public static IServiceCollection AddCommandHandlerDecorators(this IServiceCollection services)
+        {
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingCommandHandlerDecorator<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationCommandHandlerDecorator<,>));
+
+            return services;
+        }
+
+        public static IServiceCollection AddMartenDB(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = GetConnectionString(configuration);
+            var options = new StoreOptions();
+            options.Connection(connectionString);
+            options.Events.InlineProjections.AggregateStreamsWith<Payment>();
+            services.AddMarten(options);
 
             return services;
         }

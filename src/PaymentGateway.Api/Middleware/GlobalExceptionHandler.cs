@@ -14,6 +14,7 @@ using PaymentGateway.Domain.Helpers;
 using Serilog;
 using ILogger = Serilog.ILogger;
 using PaymentGateway.Domain.Exceptions;
+using PaymentGateway.Application;
 
 namespace PaymentGateway.Api.Middleware
 {
@@ -65,7 +66,12 @@ namespace PaymentGateway.Api.Middleware
                 response.StackTrace = error.StackTrace;
                 response.InnerExceptionMessage = error.InnerException != null ? error.GetBaseException().Message : null;
             }
-            
+
+            else if (error is ValidationException)
+            {
+                response.Data = error.Data;
+            }
+
             await context.Response.WriteAsync(response.ToJson(true)).ConfigureAwait(false);
         }
 
@@ -82,6 +88,7 @@ namespace PaymentGateway.Api.Middleware
                     break;
 
                 case ArgumentException aExcption:
+                case ValidationException vException:
                     statusCode = HttpStatusCode.BadRequest;
                     defaultMsg = "Invalid request";
                     break;
@@ -108,6 +115,11 @@ namespace PaymentGateway.Api.Middleware
 
         private static string GetErrorMessage(Exception exception, string defaultMessage)
         {
+            if (exception is ValidationException)
+            {
+                return exception.Message;
+            }
+            
             var errorMsg = default(string);
 
             if (exception is AppException appException)

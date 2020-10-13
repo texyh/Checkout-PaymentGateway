@@ -52,32 +52,27 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
             var encriptionKey = Guid.NewGuid().ToString("N");
             var encriptedCardNumber = _cryptoService.Encrypt(command.CardNumber, encriptionKey);
             var encriptedCardMonth = _cryptoService.Encrypt(command.CardExpiryMonth, encriptionKey);
-            var encriptedCardDay = _cryptoService.Encrypt(command.CardExpiryYear, encriptionKey);
+            var encriptedCardYear = _cryptoService.Encrypt(command.CardExpiryYear, encriptionKey);
             var encriptedCardCVV = _cryptoService.Encrypt(command.CVV, encriptionKey);
 
-            var payment = new Payment
-            {
-                Id = Guid.NewGuid().ToString(),
-                EncriptionKey = encriptionKey,
-                CardNumber = encriptedCardNumber,
-                CardExpiryMonth = encriptedCardMonth,
-                CardExpiryYear = encriptedCardDay,
-                CVV = encriptedCardCVV,
-                Amount = command.Amount,
-                Currency = command.Currency,
-                MerchantId = command.MerchantId,
-            };
+            var payment = new Payment(encriptedCardNumber,
+                                      encriptedCardMonth,
+                                      encriptedCardYear,
+                                      command.Amount,
+                                      command.Currency,
+                                      encriptedCardCVV,
+                                      encriptionKey,
+                                      bankPayemntResult.PaymentIdentifier,
+                                      bankPayemntResult.PaymentStatus);
 
-            payment.BankPaymentIdentifier = bankPayemntResult.PaymentIdentifier;
-            payment.PaymentStatus = bankPayemntResult.PaymentStatus;
 
-            await _paymentRepository.Save(payment);
+            await _paymentRepository.AppendChanges(payment);
 
 
             if(bankPayemntResult.PaymentStatus == PaymentStatus.Success) 
             {
                 _logger.Information("bank payment successful");
-                return new SuccessResult(payment.Id);
+                return new SuccessResult(payment.Id.ToString());
             } 
             else 
             {

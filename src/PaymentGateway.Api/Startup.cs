@@ -32,12 +32,15 @@ namespace PaymentGateway.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AcquiringBankSettings>(options =>  options.ApiUrl = Configuration.GetValue("BANK_API_URL", string.Empty));
-            
+
             services
                 .AddSwaggerGen()
+                .AddFluentValidation()
                 .AddControllers();
 
-            services.AddMediatR(typeof(Startup), typeof(GetPaymentQuery));
+            services.AddMediatR(typeof(Startup), typeof(GetPaymentQuery))
+                    .AddCommandHandlerDecorators();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IServiceProvider serviceProvider)
@@ -47,8 +50,6 @@ namespace PaymentGateway.Api
             var logger = serviceProvider.GetService<ILogger>();
 
             app.UseExceptionHandler(builder => builder.HandleExceptions(logger, environment));
-
-            ApplyMigrations(serviceProvider, logger);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -66,17 +67,6 @@ namespace PaymentGateway.Api
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void ApplyMigrations(IServiceProvider serviceProvider, ILogger logger) 
-        {
-            logger.Information("Applying Migration");
-            var dbContext = serviceProvider.GetService<PaymentGatewayDbContext>();
-            
-            if(dbContext.Database.GetPendingMigrations().Any())
-            {
-                dbContext.Database.Migrate();
-            }
         }
     }
 }

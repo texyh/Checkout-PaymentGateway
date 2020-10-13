@@ -42,9 +42,9 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
             await sut.Handle(command, new System.Threading.CancellationToken());
 
             mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Success)), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Success)), Times.Once);
         }
 
         [Fact]
@@ -73,9 +73,9 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
             await sut.Handle(command, new System.Threading.CancellationToken());
 
             mockCyptoService.Verify(x => x.Encrypt(command.CardNumber, It.IsAny<string>()), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
-            mockPaymentRepository.Verify(x => x.Save(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Failed)), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.CardNumber == "__encripted__")), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.BankPaymentIdentifier == someId)), Times.Once);
+            mockPaymentRepository.Verify(x => x.AppendChanges(It.Is<Payment>(y => y.PaymentStatus == PaymentStatus.Failed)), Times.Once);
         }
 
     }

@@ -23,7 +23,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
             var payment = GivenPayment(paymentId);
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockLogger = new Mock<ILogger>();
-            mockPaymentRepository.Setup(x => x.FindBy(It.IsAny<string>()))
+            mockPaymentRepository.Setup(x => x.Load(It.IsAny<Guid>()))
                                  .ReturnsAsync(payment);
             var mockCyptoService = new Mock<ICryptoService>();
             mockCyptoService.Setup(x => x.Decrypt(payment.CardNumber, It.IsAny<string>()))
@@ -44,7 +44,7 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
             var paymentId = Guid.NewGuid().ToString();
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockLogger = new Mock<ILogger>();
-            mockPaymentRepository.Setup(x => x.FindBy(It.IsAny<string>()))
+            mockPaymentRepository.Setup(x => x.Load(It.IsAny<Guid>()))
                 .ReturnsAsync(null as Payment);
             var mockCyptoService = new Mock<ICryptoService>();
             var sut = new GetPaymentQueryHandler(mockPaymentRepository.Object, mockCyptoService.Object, mockLogger.Object);
@@ -56,21 +56,13 @@ namespace PaymentGateway.UnitTests.UseCases.GetPayment
 
         private Payment GivenPayment(string id) 
         {
-            return new Payment
-            {
-                Id = id,
-                EncriptionKey = "20ba9d3d123141c8b0ae4df0a3383f7e",
-                CardNumber = "7bedd30c790f45c6410b7389a58d2cbe.a159e99d6f97d3fbc60fe88161d54edac66a5c323521b7b2281465824bdcbae0",
-                CardExpiryMonth = "c3bae8e66e8cf282b77ce798874e5b22.9cc552bdb6f06ebd08c7a2705fa40d28",
-                CardExpiryYear = "1dbf11b97e97ea71d51bc8cf0ffee21f.2088cf0b4b3522a5230beebeaea0132a",
-                CVV = "e6cbdaf95f6f694ba2b83d24b7b9403a.b07288ff12c714ccfd5ca281e84da132",
-                BankPaymentIdentifier = "d4920d4e-c6e0-4b6e-a259-cab69db9f1c5",
-                Amount = 100,
-                Currency = "EUR",
-                PaymentStatus = PaymentStatus.Success,
-                MerchantId = Guid.NewGuid().ToString(),
-                CreatedDate = DateTime.UtcNow
-            };
+           return new Payment("7bedd30c790f45c6410b7389a58d2cbe.a159e99d6f97d3fbc60fe88161d54edac66a5c323521b7b2281465824bdcbae0",
+                                      "c3bae8e66e8cf282b77ce798874e5b22.9cc552bdb6f06ebd08c7a2705fa40d28",
+                                      "1dbf11b97e97ea71d51bc8cf0ffee21f.2088cf0b4b3522a5230beebeaea0132a", 100, "EUR",
+                                      "e6cbdaf95f6f694ba2b83d24b7b9403a.b07288ff12c714ccfd5ca281e84da132",
+                                      "20ba9d3d123141c8b0ae4df0a3383f7e",
+                                      "d4920d4e-c6e0-4b6e-a259-cab69db9f1c5",
+                                      PaymentStatus.Success);
         }
     }
 }

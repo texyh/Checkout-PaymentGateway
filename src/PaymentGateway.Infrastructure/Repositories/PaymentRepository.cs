@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Marten;
+using Microsoft.EntityFrameworkCore;
 using PaymentGateway.Domain.Payments;
 using System;
 using System.Collections.Generic;
@@ -9,23 +10,28 @@ namespace PaymentGateway.Infrastructure
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly PaymentGatewayDbContext _dbContext;
+        private readonly IDocumentStore _documentStore;
 
-        public PaymentRepository(PaymentGatewayDbContext dbContext)
+        public PaymentRepository(IDocumentStore documentStore)
         {
-            _dbContext = dbContext;
+            _documentStore = documentStore;
         }
 
-        public Task Save(Payment payment)
+        public async Task AppendChanges(Payment payment)
         {
-            _dbContext.Payments.Add(payment);
-
-            return _dbContext.SaveChangesAsync();
+            using (var session = _documentStore.OpenSession())
+            {
+                session.Events.Append(payment.Id, payment.GetDomainEvents());
+                await session.SaveChangesAsync();
+            }
         }
 
-        public async Task<Payment> FindBy(string id)
+        public async Task<Payment> Load(Guid Id)
         {
-            return await _dbContext.Payments.SingleAsync(x => x.Id == id);
+            using (var session = _documentStore.OpenSession())
+            {
+                return await session.Events.AggregateStreamAsync<Payment>(Id);
+            }
         }
     }
 }

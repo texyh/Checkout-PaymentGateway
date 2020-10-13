@@ -7,8 +7,8 @@ namespace PaymentGateway.Domain.Payments
 {
     public interface IPaymentRepository
     {
-        Task Save(Payment payment);
+        Task AppendChanges(Payment payment);
 
-        Task<Payment> FindBy(string Id);
+        Task<Payment> Load(Guid Id);
     }
 }
