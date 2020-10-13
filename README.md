@@ -3,7 +3,7 @@
 ## Technical Details
 
 ### Architecture
-I've used `Clean Architecture`, `DDD`, `Event Sourcing`, `CQRS`  while I was working on this test. This means that you will see `UseCase` in the solution and everything was grouped and placed under its own use case folder. It's really easy to navigate. I've also used `Martendb`, a .NET Transactional Document DB and Event Store on `PostgreSQL`. You will also see tests such as `UnitTests`, `IntegrationTests` and `AcceptanceTests`. 
+I've used `Clean Architecture`, `DDD`, `Event Sourcing`, `CQRS`  while I was working on this project. This means that you will see `UseCase` in the solution and everything was grouped and placed under its own use case folder. It's really easy to navigate. I've also used `Martendb`, a .NET Transactional Document DB and Event Store on `PostgreSQL`. You will also see tests such as `UnitTests`, `IntegrationTests` and `AcceptanceTests`. 
 
 
 ### Folder Structure
