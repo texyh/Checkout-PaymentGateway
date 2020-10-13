@@ -1,4 +1,4 @@
-# Checkout.Com Technical Test
+# Checkout.Com 
 
 ## Technical Details
 
