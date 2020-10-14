@@ -66,7 +66,7 @@ namespace PaymentGateway.IntegrationTests
             var httpClient = _testServer.CreateClient();
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var httpResponse = await httpClient.PostAsync(uri, content, cancellationToken);
-            var a = await httpResponse.Content.ReadAsStringAsync();
+            
             return JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
         }
 
