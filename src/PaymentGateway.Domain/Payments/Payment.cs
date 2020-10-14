@@ -1,4 +1,5 @@
-﻿using PaymentGateway.Domain.Abstractions;
+﻿using Newtonsoft.Json;
+using PaymentGateway.Domain.Abstractions;
 using PaymentGateway.Domain.Payments.Events;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,7 @@ namespace PaymentGateway.Domain.Payments
 {
     public class Payment : AggregateRoot
     {
-
-        public  Payment()
-        {
-
-
-        }
-
+        [JsonConstructor]
         public Payment(string cardNumber,
                        string cardExpiryMonth,
                        string cardExpiryYear,
@@ -22,13 +17,13 @@ namespace PaymentGateway.Domain.Payments
                        string currency, 
                        string cvv, 
                        string encriptionKey, 
-                       string bankIdentifier, string paymentStatus)
+                       string bankPaymentIdentifier, string paymentStatus)
         {
             var @event = new PaymentCreatedEvent(cardNumber,
                 cardExpiryMonth,
                 cardExpiryYear,
                 amount,
-                currency, cvv, encriptionKey, bankIdentifier, paymentStatus);
+                currency, cvv, encriptionKey, bankPaymentIdentifier, paymentStatus);
             AddDomainEvent(@event);
             Apply(@event);
         }

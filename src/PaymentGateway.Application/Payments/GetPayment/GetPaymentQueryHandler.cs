@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using PaymentGateway.Application.Abstractions.Queries;
 using PaymentGateway.Application.Crypto;
 using PaymentGateway.Application.Payments.GetPayment;
+using PaymentGateway.Domain.Abstractions;
 using PaymentGateway.Domain.Helpers;
 using PaymentGateway.Domain.Payments;
 using Serilog;
@@ -12,14 +13,14 @@ namespace PaymentGateway.Api.UseCases.GetPayment
 {
     public class GetPaymentQueryHandler : IQueryHandler<GetPaymentQuery, GetPaymentResult>
     {
-        private readonly IPaymentRepository _paymentRepository;
+        private readonly IReadOnlyRepository<Payment> _paymentRepository;
         
         private readonly ICryptoService _cryptoService;
 
         private readonly ILogger _logger;
 
         public GetPaymentQueryHandler(
-            IPaymentRepository paymentRepository,
+            IReadOnlyRepository<Payment> paymentRepository,
             ICryptoService cryptoService,
             ILogger logger)
         {
@@ -30,7 +31,7 @@ namespace PaymentGateway.Api.UseCases.GetPayment
 
         public async Task<GetPaymentResult> Handle(GetPaymentQuery query, CancellationToken cancellationToken)
         {
-            var payment = await _paymentRepository.Load(Guid.Parse(query.PaymentId));
+            var payment = await _paymentRepository.FindBy(Guid.Parse(query.PaymentId));
            
             if(payment == null) 
             {
