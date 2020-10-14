@@ -2,6 +2,7 @@
 using PaymentGateway.Domain.Payments.Commands;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 
@@ -28,8 +29,22 @@ namespace PaymentGateway.Application.Payments.ProcessPayment
         {
             var isValidYear = int.TryParse(command.CardExpiryYear, out var year);
             var isValidMonth = int.TryParse(command.CardExpiryMonth, out var month);
+            var today = DateTime.UtcNow;
 
-            return (isValidYear && year >= DateTime.UtcNow.Year && isValidMonth && month > DateTime.UtcNow.Month);
+            if(isValidYear && year > today.Year)
+            {
+                return true;
+            }
+
+            else if (isValidMonth && isValidYear && year == today.Year &&  month > today.Month) 
+            {
+                return true; // The same year.
+            }
+
+            else
+            {
+                return false;
+            }
         }
     }
 }

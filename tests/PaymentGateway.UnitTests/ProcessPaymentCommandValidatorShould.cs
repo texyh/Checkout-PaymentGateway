@@ -20,7 +20,7 @@ namespace PaymentGateway.UnitTests
                 Amount = 100,
                 Currency = "AUS",
                 CardExpiryYear = "2021",
-                CardExpiryMonth = "01",
+                CardExpiryMonth = "04",
             };
 
             var validator = new ProcessPaymentCommandValidator();
@@ -37,7 +37,7 @@ namespace PaymentGateway.UnitTests
                 Amount = 100,
                 Currency = "AUS",
                 CardExpiryYear = "2020",
-                CardExpiryMonth = "01",
+                CardExpiryMonth = "04",
             };
 
             var validator = new ProcessPaymentCommandValidator();

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using PaymentGateway.Application.Abstractions.Commands;
 using PaymentGateway.Application.Crypto;
+using PaymentGateway.Domain.Abstractions;
 using PaymentGateway.Domain.AcquiringBank;
 using PaymentGateway.Domain.Payments;
 using PaymentGateway.Domain.Payments.Commands;
@@ -15,7 +16,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
 {
     public class ProcessPaymentCommandHandler : ICommandHandler<ProcessPaymentCommand, ProcessPaymentResult>
     {
-        private readonly IPaymentRepository _paymentRepository;
+        private readonly IAggregateStore<Payment> _paymentRepository;
 
         private readonly ICryptoService _cryptoService;
 
@@ -24,7 +25,7 @@ namespace PaymentGateway.Api.UseCases.ProcessPayment
         private readonly ILogger _logger;
 
         public ProcessPaymentCommandHandler(
-            IPaymentRepository paymentRepository,
+            IAggregateStore<Payment> paymentRepository,
             ICryptoService cryptoService,
             IAquiringBankClient acuquiryBank,
             ILogger logger)

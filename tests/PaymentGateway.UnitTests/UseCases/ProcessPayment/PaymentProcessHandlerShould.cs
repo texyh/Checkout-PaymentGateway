@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Serilog;
 using PaymentGateway.Application.Crypto;
+using PaymentGateway.Domain.Abstractions;
 
 namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
 {
@@ -20,7 +21,7 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
         public async Task Proccess_And_Persist_Payment()
         {
             var someId = Guid.NewGuid().ToString();
-            var mockPaymentRepository = new Mock<IPaymentRepository>();
+            var mockPaymentRepository = new Mock<IAggregateStore<Payment>>();
             var mockCyptoService = new Mock<ICryptoService>();
             var mockBankClient = new Mock<IAquiringBankClient>();
             var mockLogger = new Mock<ILogger>();
@@ -51,7 +52,7 @@ namespace PaymentGateway.UnitTests.UseCases.ProcessPayment
         public async Task Proccess_And_Persist_Payment_When_Acquiring_Bank_Fails_To_Process_Payment()
         {
             var someId = Guid.NewGuid().ToString();
-            var mockPaymentRepository = new Mock<IPaymentRepository>();
+            var mockPaymentRepository = new Mock<IAggregateStore<Payment>>();
             var mockCyptoService = new Mock<ICryptoService>();
             var mockBankClient = new Mock<IAquiringBankClient>();
             var mockLogger = new Mock<ILogger>();

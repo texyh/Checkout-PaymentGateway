@@ -80,9 +80,9 @@ namespace PaymentGateway.IntegrationTests.AcceptanceTests
             {
                 Amount = 100,
                 Currency = "EUR",
-                CardExpiryYear = "24",
-                CardExpiryMonth = "4",
-                CardNumber = "5564876598743467",
+                CardExpiryYear = "2021",
+                CardExpiryMonth = "04",
+                CardNumber = "2221007046012690",
                 CVV = "782",
                 MerchantId = Guid.NewGuid().ToString()
             };
