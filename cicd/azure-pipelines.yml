@@ -30,6 +30,7 @@ jobs:
         displayName: "Set buildVersion"
 
   - job: BuildApi
+    dependsOn: [CalcuateAndSetBuildVersion]
     displayName: "Build Payment Gateway api and Run Tests"
     pool:
       vmImage: $(vmImage)
