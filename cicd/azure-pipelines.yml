@@ -10,6 +10,7 @@ variables:
   vmImage: 'ubuntu-latest'
   dockerfilePath: '$(Build.SourcesDirectory)/docker/Dockerfile'
   dockerComposePath: '$(Build.SourcesDirectory)/docker/docker-compose.yml'
+  dockerHubRegistryServiceConnection : 'dockerHub'
 
 jobs:
   - job: BuildApi
@@ -25,6 +26,14 @@ jobs:
         dockerfile: $(dockerfilePath)
         buildContext: $(Build.SourcesDirectory)
 
+    - task: Docker@2
+      displayName: Push image to container registry
+      inputs:
+        command: push
+        dockerfile: $(dockerfilePath)
+        buildContext: $(Build.SourcesDirectory)
+        containerRegistry: $(dockerHubRegistryServiceConnection)
+        
     - script: dotnet test tests/PaymentGateway.UnitTests 
       displayName: Run Unit Tests
 
