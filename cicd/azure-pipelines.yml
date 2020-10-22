@@ -29,6 +29,10 @@ jobs:
       - script: echo '##vso[task.setvariable variable=buildVersion]$(GitVersion.SemVer)'
         displayName: "Set buildVersion"
 
+      - script: echo '##vso[task.setvariable variable=buildVersion;isOutput=true]$(buildVersion)'
+        name: setVersion
+        displayName: 'export the buildVersion'
+
   - job: BuildApi
     dependsOn: [CalcuateAndSetBuildVersion]
     displayName: "Build Payment Gateway api and Run Tests"
