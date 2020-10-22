@@ -11,6 +11,7 @@ variables:
   dockerfilePath: '$(Build.SourcesDirectory)/docker/Dockerfile'
   dockerComposePath: '$(Build.SourcesDirectory)/docker/docker-compose.yml'
   dockerHubRegistryServiceConnection : 'dockerHub'
+  repositoryName: 'texyp/paymentGateway'
 
 jobs:
   - job: BuildApi
@@ -24,7 +25,7 @@ jobs:
       inputs:
         command: build
         dockerfile: $(dockerfilePath)
-        repository: 'paymentGateway'
+        repository: $(repositoryName)
         buildContext: $(Build.SourcesDirectory)
 
     - task: Docker@2
@@ -32,7 +33,7 @@ jobs:
       inputs:
         command: push
         dockerfile: $(dockerfilePath)
-        repository: 'paymentGateway'
+        repository: $(repositoryName)
         buildContext: $(Build.SourcesDirectory)
         containerRegistry: $(dockerHubRegistryServiceConnection)
         
