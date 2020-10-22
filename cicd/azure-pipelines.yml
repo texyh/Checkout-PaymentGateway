@@ -24,6 +24,7 @@ jobs:
       inputs:
         command: build
         dockerfile: $(dockerfilePath)
+        repository: 'paymentGateway'
         buildContext: $(Build.SourcesDirectory)
 
     - task: Docker@2
