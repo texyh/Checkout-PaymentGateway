@@ -34,7 +34,8 @@ jobs:
     displayName: "Build Payment Gateway api and Run Tests"
     pool:
       vmImage: $(vmImage)
-
+    variables:
+      buildVersion: $[ dependencies.CalcuateAndSetBuildVersion.outputs['setVersion.buildVersion'] ]
     steps:
     - task: Docker@2
       displayName: Build Docker Image
